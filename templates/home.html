@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Fantasy Football League Manager</h1>
+
+<h2>Leagues</h2>
+<ul>
+    {% for league in leagues %}
+        <li>{{ league.league_name }} ({{ league.season_year }})</li>
+    {% endfor %}
+</ul>
+
+<h2>Leaderboard</h2>
+<table>
+    <tr>
+        <th>Team</th>
+        <th>Owner</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Total Points</th>
+    </tr>
+    {% for team in leaderboard %}
+    <tr>
+        <td><a href="{{ url_for('roster', team_id=team.team_id) }}">{{ team.team_name }}</a></td>
+        <td>{{ team.owner_name }}</td>
+        <td>{{ team.wins }}</td>
+        <td>{{ team.losses }}</td>
+        <td>{{ team.total_points }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

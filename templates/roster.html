@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ team.team_name }} Roster</h1>
+
+<p>
+    <a href="{{ url_for('recommend', team_id=team.team_id) }}">See Recommendation</a>
+</p>
+
+<table>
+    <tr>
+        <th>Player</th>
+        <th>NFL Team</th>
+        <th>Position</th>
+        <th>Status</th>
+        <th>Update</th>
+        <th>Drop</th>
+    </tr>
+    {% for player in players %}
+    <tr>
+        <td>{{ player.player_name }}</td>
+        <td>{{ player.nfl_team }}</td>
+        <td>{{ player.position }}</td>
+        <td>{{ player.roster_status }}</td>
+        <td>
+            <form method="POST" action="{{ url_for('update_roster_status') }}">
+                <input type="hidden" name="roster_id" value="{{ player.roster_id }}">
+                <input type="hidden" name="team_id" value="{{ team.team_id }}">
+                <select name="roster_status">
+                    <option value="Starter">Starter</option>
+                    <option value="Bench">Bench</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+        <td>
+            <form method="POST" action="{{ url_for('drop_player') }}">
+                <input type="hidden" name="roster_id" value="{{ player.roster_id }}">
+                <input type="hidden" name="team_id" value="{{ team.team_id }}">
+                <button type="submit">Drop</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

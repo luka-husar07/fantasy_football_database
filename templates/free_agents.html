@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Free Agents</h1>
+
+<form method="GET">
+    <label>Filter by Position:</label>
+    <select name="position">
+        <option value="">All</option>
+        <option value="QB" {% if selected_position == "QB" %}selected{% endif %}>QB</option>
+        <option value="RB" {% if selected_position == "RB" %}selected{% endif %}>RB</option>
+        <option value="WR" {% if selected_position == "WR" %}selected{% endif %}>WR</option>
+        <option value="TE" {% if selected_position == "TE" %}selected{% endif %}>TE</option>
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <tr>
+        <th>Player</th>
+        <th>NFL Team</th>
+        <th>Position</th>
+    </tr>
+    {% for player in free_agents %}
+    <tr>
+        <td>{{ player.player_name }}</td>
+        <td>{{ player.nfl_team }}</td>
+        <td>{{ player.position }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

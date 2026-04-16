@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Recommendation for {{ team.team_name }}</h1>
+
+{% if weakest %}
+    <p><strong>Weakest position:</strong> {{ weakest.position }}</p>
+    <p><strong>Average points at that position:</strong> {{ weakest.avg_points }}</p>
+{% else %}
+    <p>No weakness data available.</p>
+{% endif %}
+
+{% if recommendation %}
+    <h2>Best Free Agent Recommendation</h2>
+    <ul>
+        <li><strong>Name:</strong> {{ recommendation.player_name }}</li>
+        <li><strong>NFL Team:</strong> {{ recommendation.nfl_team }}</li>
+        <li><strong>Position:</strong> {{ recommendation.position }}</li>
+        <li><strong>Average Fantasy Points:</strong> {{ recommendation.avg_points }}</li>
+    </ul>
+{% else %}
+    <p>No recommendation available.</p>
+{% endif %}
+{% endblock %}
