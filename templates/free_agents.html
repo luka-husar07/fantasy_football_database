@@ -12,6 +12,18 @@
         <option value="WR" {% if selected_position == "WR" %}selected{% endif %}>WR</option>
         <option value="TE" {% if selected_position == "TE" %}selected{% endif %}>TE</option>
     </select>
+
+    <label>Select Team to Sign For:</label>
+    <select name="team_id">
+        <option value="">-- Select Team --</option>
+        {% for team in teams %}
+            <option value="{{ team.team_id }}"
+                {% if selected_team_id == team.team_id|string %}selected{% endif %}>
+                {{ team.team_name }}
+            </option>
+        {% endfor %}
+    </select>
+
     <button type="submit">Search</button>
 </form>
 
@@ -20,12 +32,24 @@
         <th>Player</th>
         <th>NFL Team</th>
         <th>Position</th>
+        <th>Action</th>
     </tr>
     {% for player in free_agents %}
     <tr>
         <td>{{ player.player_name }}</td>
         <td>{{ player.nfl_team }}</td>
         <td>{{ player.position }}</td>
+        <td>
+            {% if selected_team_id %}
+            <form method="POST" action="/sign_player">
+                <input type="hidden" name="player_id" value="{{ player.player_id }}">
+                <input type="hidden" name="team_id" value="{{ selected_team_id }}">
+                <button type="submit">Sign</button>
+            </form>
+            {% else %}
+            <span>Select a team first</span>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>

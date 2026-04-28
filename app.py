@@ -93,6 +93,7 @@ def roster(team_id):
 @app.route("/free_agents")
 def free_agents():
     position = request.args.get("position", "")
+    selected_team_id = request.args.get("team_id", "")
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -102,9 +103,9 @@ def free_agents():
             SELECT p.*
             FROM Player p
             WHERE p.position = %s
-              AND p.player_id NOT IN (
-                  SELECT player_id FROM Roster WHERE end_date IS NULL
-              )
+                AND p.player_id NOT IN (
+                    SELECT player_id FROM Roster WHERE end_date IS NULL
+                )
             ORDER BY p.player_name
         """, (position,))
     else:
@@ -117,11 +118,17 @@ def free_agents():
             ORDER BY p.position, p.player_name
         """)
 
-    free_agents = cursor.fetchall()
+    agents = cursor.fetchall()
+
+    cursor.execute("SELECT team_id, team_name FROM Team")
+    teams = cursor.fetchall()
+
     cursor.close()
     conn.close()
 
-    return render_template("free_agents.html", free_agents=free_agents, selected_position=position)
+    return render_template("free_agents.html", free_agents=agents, 
+                           selected_position=position, teams=teams, 
+                           selected_team_id=selected_team_id)
 
 @app.route("/update_roster_status", methods=["POST"])
 def update_roster_status():
@@ -161,6 +168,24 @@ def drop_player():
     cursor.close()
     conn.close()
     return redirect(url_for("roster", team_id=team_id))
+
+@app.route("/sign_player", methods=["POST"])
+def sign_player():
+    player_id = request.form["player_id"]
+    team_id = request.form["team_id"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO Roster (team_id, player_id, roster_status, start_date)
+        VALUES (%s, %s, 'Active', CURDATE())
+    """, (team_id, player_id))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+    return redirect(url_for("free_agents"))
 
 @app.route("/recommend/<int:team_id>")
 def recommend(team_id):
