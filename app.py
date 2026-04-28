@@ -69,6 +69,24 @@ def teams():
     conn.close()
     return render_template("teams.html", teams=teams, owners=owners, leagues=leagues)
 
+@app.route("/add_owner", methods=["POST"])
+def add_owner():
+    owner_name = request.form["owner_name"]
+    email = request.form["email"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO Owner (owner_name, email)
+        VALUES (%s, %s)
+    """, (owner_name, email))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+    return redirect(url_for("teams"))
+
 @app.route("/team/<int:team_id>/roster")
 def roster(team_id):
     conn = get_db_connection()
