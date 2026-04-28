@@ -42,6 +42,7 @@
         <th>Wins</th>
         <th>Losses</th>
         <th>Total Points</th>
+        <th>Action</th>
     </tr>
     {% for team in teams %}
     <tr>
@@ -50,6 +51,12 @@
         <td>{{ team.wins }}</td>
         <td>{{ team.losses }}</td>
         <td>{{ team.total_points }}</td>
+        <td>
+            <form method="POST" action="/delete_team">
+                <input type="hidden" name="team_id" value="{{ team.team_id }}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>

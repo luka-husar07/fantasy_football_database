@@ -87,6 +87,20 @@ def add_owner():
     conn.close()
     return redirect(url_for("teams"))
 
+@app.route("/delete_team", methods=["POST"])
+def delete_team():
+    team_id = request.form["team_id"]
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM Team WHERE team_id = %s", (team_id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+    return redirect(url_for("teams"))
+
 @app.route("/team/<int:team_id>/roster")
 def roster(team_id):
     conn = get_db_connection()
